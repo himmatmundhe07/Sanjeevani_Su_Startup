@@ -14,6 +14,7 @@ const PatientFeedbackForm = ({ prescription, patientId, onClose }: { prescriptio
   const [adherence, setAdherence] = useState<string>('');
   const [hadSideEffects, setHadSideEffects] = useState<boolean | null>(null);
   const [sideEffects, setSideEffects] = useState<string[]>([]);
+  const [customSideEffect, setCustomSideEffect] = useState<string>('');
   const [severity, setSeverity] = useState<string>('Mild');
   const [notes, setNotes] = useState('');
   const [continueRec, setContinueRec] = useState<boolean | null>(null);
@@ -38,6 +39,11 @@ const PatientFeedbackForm = ({ prescription, patientId, onClose }: { prescriptio
         age = Math.abs(new Date(diff).getUTCFullYear() - 1970);
       }
 
+      const finalSideEffects = [...sideEffects];
+      if (customSideEffect.trim() && !finalSideEffects.includes(customSideEffect.trim())) {
+        finalSideEffects.push(customSideEffect.trim());
+      }
+
       const { error } = await supabase.from('prescription_feedback').insert([{
         prescription_id: prescription.id,
         patient_id: patientId,
@@ -46,7 +52,7 @@ const PatientFeedbackForm = ({ prescription, patientId, onClose }: { prescriptio
         improvement_rating: overallRating,
         adherence_rating: adherence,
         had_side_effects: hadSideEffects,
-        side_effects: sideEffects,
+        side_effects: finalSideEffects,
         side_effect_severity: hadSideEffects ? severity : null,
         patient_notes: notes,
         continue_recommended: continueRec,
@@ -223,6 +229,15 @@ const PatientFeedbackForm = ({ prescription, patientId, onClose }: { prescriptio
                           {se}
                         </button>
                       ))}
+                    </div>
+                    <div className="mt-3">
+                      <input 
+                        type="text" 
+                        value={customSideEffect} 
+                        onChange={(e) => setCustomSideEffect(e.target.value)} 
+                        placeholder="Other side effect (please specify)" 
+                        className="w-full p-2.5 rounded-lg border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500 text-[13px]" 
+                      />
                     </div>
                   </div>
                   <div>

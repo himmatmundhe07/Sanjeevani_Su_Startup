@@ -17,10 +17,9 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
   }, [patientId]);
 
   const fetchData = async () => {
-    // Fetch active prescriptions
     const { data: rxData } = await supabase
       .from('prescriptions')
-      .select('*')
+      .select('*, prescription_feedback(id)')
       .eq('patient_id', patientId)
       .eq('status', 'Active')
       .order('prescription_date', { ascending: false });
@@ -32,12 +31,7 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
       // and hasn't been submitted yet — no deadline check
       for (const rx of rxData) {
         if (rx.feedback_requested) {
-          const { count } = await supabase
-            .from('prescription_feedback')
-            .select('*', { count: 'exact', head: true })
-            .eq('prescription_id', rx.id);
-          
-          if (count === 0 && !showFeedbackFor) {
+          if ((!rx.prescription_feedback || rx.prescription_feedback.length === 0) && !showFeedbackFor) {
             setShowFeedbackFor(rx);
             break;
           }
@@ -224,6 +218,13 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
                   >
                     <Download size={14} /> PDF
                   </button>
+                  {rx.feedback_requested && (!rx.prescription_feedback || rx.prescription_feedback.length === 0) && (
+                    <button 
+                      onClick={() => setShowFeedbackFor(rx)} 
+                      className="px-3 py-1.5 rounded-lg text-[12px] font-bold text-white whitespace-nowrap" style={{ background: '#F59E0B' }}>
+                      Give Feedback
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

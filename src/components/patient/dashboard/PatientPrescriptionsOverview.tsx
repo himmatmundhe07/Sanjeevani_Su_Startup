@@ -28,20 +28,18 @@ const PatientPrescriptionsOverview = ({ patientId }: { patientId: string }) => {
     if (rxData) {
       setPrescriptions(rxData);
 
-      // check if any need feedback
-      const todayStr = new Date().toISOString().split('T')[0];
+      // HACKATHON MODE: Show feedback form for any prescription that requested feedback
+      // and hasn't been submitted yet — no deadline check
       for (const rx of rxData) {
-        if (rx.feedback_requested && rx.feedback_deadline_date) {
-          if (rx.feedback_deadline_date <= todayStr) {
-            // Check if feedback already exists
-            const { count } = await supabase
-              .from('prescription_feedback')
-              .select('*', { count: 'exact', head: true })
-              .eq('prescription_id', rx.id);
-            
-            if (count === 0 && !showFeedbackFor) {
-              setShowFeedbackFor(rx);
-            }
+        if (rx.feedback_requested) {
+          const { count } = await supabase
+            .from('prescription_feedback')
+            .select('*', { count: 'exact', head: true })
+            .eq('prescription_id', rx.id);
+          
+          if (count === 0 && !showFeedbackFor) {
+            setShowFeedbackFor(rx);
+            break;
           }
         }
       }

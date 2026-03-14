@@ -95,7 +95,7 @@ const HospitalPatients = () => {
   const [rxViewFeedback, setRxViewFeedback] = useState<any>(null);
   const [rxSaving, setRxSaving] = useState(false);
   const [rxForm, setRxForm] = useState({
-    diagnosis: '', instructions: '', feedbackDays: 7, requestFeedback: true, validDays: 30,
+    diagnosis: '', instructions: '', feedbackDays: 0, requestFeedback: true, validDays: 30,
     medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] as any[],
   });
 
@@ -217,7 +217,7 @@ const HospitalPatients = () => {
 
       toast.success('💊 Prescription issued! Patient can now see it on their dashboard.');
       setShowRxModal(false);
-      setRxForm({ diagnosis: '', instructions: '', feedbackDays: 7, requestFeedback: true, validDays: 30, medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] });
+      setRxForm({ diagnosis: '', instructions: '', feedbackDays: 0, requestFeedback: true, validDays: 30, medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] });
       fetchPatientRx(patientId);
     } catch (e: any) {
       toast.error('Error: ' + (e.message || 'Failed'));
@@ -959,7 +959,7 @@ const HospitalPatients = () => {
                       <button
                         onClick={() => {
                           setShowRxModal(true);
-                          setRxForm({ diagnosis: selectedPatient.diagnosis || '', instructions: '', feedbackDays: 7, requestFeedback: true, validDays: 30, medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] });
+                          setRxForm({ diagnosis: selectedPatient.diagnosis || '', instructions: '', feedbackDays: 0, requestFeedback: true, validDays: 30, medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] });
                         }}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold text-white"
                         style={{ background: '#F59E0B' }}
@@ -975,7 +975,7 @@ const HospitalPatients = () => {
                         <button
                           onClick={() => {
                             setShowRxModal(true);
-                            setRxForm({ diagnosis: selectedPatient.diagnosis || '', instructions: '', feedbackDays: 7, requestFeedback: true, validDays: 30, medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] });
+                            setRxForm({ diagnosis: selectedPatient.diagnosis || '', instructions: '', feedbackDays: 0, requestFeedback: true, validDays: 30, medicines: [{ name: '', dosage: '', form: 'Tablet', timesPerDay: 3, durationDays: 7, instructions: '' }] });
                           }}
                           className="text-[13px] font-medium mt-2" style={{ color: '#0891B2' }}
                         >

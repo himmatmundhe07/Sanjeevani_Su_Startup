@@ -94,6 +94,23 @@ const translations: Record<string, Record<LangCode, string>> = {
 
   // Language Selector
   'Language':            { en: 'Language',          hi: 'भाषा',             gu: 'ભાષા',             mr: 'भाषा',            raj: 'भासा' },
+
+  // Prescriptions Section
+  'My Prescriptions':    { en: 'My Prescriptions',  hi: 'मेरे प्रिस्क्रिप्शन', gu: 'મારા પ્રિસ્ક્રિપ્શન', mr: 'माझे प्रिस्क्रिप्शन', raj: 'म्हारा प्रिस्क्रिप्शन' },
+  'View All':            { en: 'View All →',        hi: 'सभी देखें →',      gu: 'બધા જુઓ →',       mr: 'सर्व पहा →',      raj: 'सगळा देखो →' },
+  'No active prescriptions.': { en: 'No active prescriptions.', hi: 'कोई सक्रिय प्रिस्क्रिप्शन नहीं।', gu: 'કોઈ સક્રિય પ્રિસ્ક્રિપ્શન નથી.', mr: 'सक्रिय प्रिस्क्रिप्शन नाहीत.', raj: 'कोई चालू प्रिस्क्रिप्शन नीं।' },
+  'Prescribed by Dr.':   { en: 'Prescribed by Dr.', hi: 'डॉ. द्वारा निर्धारित', gu: 'ડૉ. દ્વારા સૂચવેલ', mr: 'डॉ. यांनी लिहिलेले', raj: 'डॉ. द्वारा लिख्यो' },
+  'Diagnosis:':          { en: 'Diagnosis:',        hi: 'निदान:',            gu: 'નિદાન:',           mr: 'निदान:',           raj: 'निदान:' },
+  'View Full':           { en: 'View Full',         hi: 'पूरा देखें',       gu: 'પૂર્ણ જુઓ',       mr: 'पूर्ण पहा',       raj: 'पूरो देखो' },
+  'Give Feedback':       { en: 'Give Feedback',     hi: 'फीडबैक दें',       gu: 'ફીડબેક આપો',      mr: 'अभिप्राय द्या',   raj: 'फीडबैक दो' },
+  'Fill Feedback Form':  { en: 'Fill Feedback Form', hi: 'फीडबैक फॉर्म भरें', gu: 'ફીડબેક ફોર્મ ભરો', mr: 'अभिप्राय फॉर्म भरा', raj: 'फीडबैक फॉर्म भरो' },
+  'Valid until':         { en: 'Valid until',        hi: 'तक वैध',           gu: 'સુધી માન્ય',      mr: 'पर्यंत वैध',      raj: 'तक वैध' },
+
+  // Today's Medicines
+  "Today's Medicines":   { en: "Today's Medicines", hi: 'आज की दवाइयाँ',    gu: "આજની દવાઓ",       mr: 'आजची औषधे',       raj: 'आज री दवाइयाँ' },
+  'No medicines scheduled for today.': { en: 'No medicines scheduled for today.', hi: 'आज के लिए कोई दवाई निर्धारित नहीं।', gu: 'આજ માટે કોઈ દવા સૂચવેલ નથી.', mr: 'आजसाठी कोणतेही औषध नाही.', raj: 'आज खातर कोई दवाई नीं।' },
+  'wants to know how you are doing': { en: 'wants to know how you\'re doing', hi: 'जानना चाहते हैं कि आप कैसा महसूस कर रहे हैं', gu: 'જાણવા માગે છે કે તમે કેવું અનુભવો છો', mr: 'तुम्हाला कसे वाटते ते जाणून घ्यायचे आहे', raj: 'जाणना चावे कि थे कियां लाग रह्यो है' },
+  'Please take 2 minutes to share how you feel.': { en: 'Please take 2 minutes to share how you feel.', hi: 'कृपया 2 मिनट लेकर बताएं कि आप कैसा महसूस कर रहे हैं।', gu: 'કૃપા કરીને 2 મિનિટ લઈને જણાવો કે તમે કેવું અનુભવો છો.', mr: 'कृपया 2 मिनिटे द्या आणि तुम्हाला कसे वाटते ते सांगा.', raj: 'कृपया 2 मिनट लेकर बताओ कि थे कियां लाग रह्यो है।' },
 };
 
 // ---------- Context & Hook ----------

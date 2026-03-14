@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Navbar from '@/components/landing/Navbar';
 import AdminLoginModal from '@/components/landing/AdminLoginModal';
 
@@ -138,10 +139,10 @@ const UserCard = ({
 
 /* ─── Stats ─── */
 const stats = [
-  { number: '73 Cr+', label: 'ABHA IDs Integrated' },
-  { number: '108', label: 'Ambulance Network Ready' },
-  { number: '24/7', label: 'Emergency Access' },
-  { number: 'ABDM', label: 'Government Compliant' },
+  { number: '73 Cr+', labelKey: 'landing.stat1' },
+  { number: '108', labelKey: 'landing.stat2' },
+  { number: '24/7', labelKey: 'landing.stat3' },
+  { number: 'ABDM', labelKey: 'landing.stat4' },
 ];
 
 /* ─── How It Works ─── */
@@ -153,7 +154,7 @@ const steps = [
         <path d="M8 34c0-6.6 5.4-12 12-12s12 5.4 12 12" stroke="#0891B2" strokeWidth="1.5" fill="none" />
       </svg>
     ),
-    title: 'Register & Get Your Health ID',
+    titleKey: 'landing.step1',
   },
   {
     icon: (
@@ -163,7 +164,7 @@ const steps = [
         <rect x="17" y="17" width="6" height="6" fill="#0891B2" fillOpacity="0.25" />
       </svg>
     ),
-    title: 'Carry Your Emergency QR',
+    titleKey: 'landing.step2',
   },
   {
     icon: (
@@ -174,7 +175,7 @@ const steps = [
         <circle cx="30" cy="22" r="2" fill="#E8A820" fillOpacity="0.3" />
       </svg>
     ),
-    title: 'Responders Get Instant Access',
+    titleKey: 'landing.step3',
   },
 ];
 
@@ -187,6 +188,7 @@ const ArrowRight = () => (
 /* ─── Main Landing Page ─── */
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [adminModalOpen, setAdminModalOpen] = useState(false);
   const cardsRef = useRef<HTMLDivElement>(null);
 
@@ -205,15 +207,15 @@ const LandingPage = () => {
             {/* Left */}
             <div>
               <p className="text-[11px] uppercase tracking-[0.1em] mb-4" style={{ color: '#0891B2', fontFamily: 'Inter, sans-serif' }}>
-                INDIA'S EMERGENCY HEALTH INFRASTRUCTURE
+                {t('landing.tagline')}
               </p>
               <h1 className="text-[34px] md:text-[52px] font-bold leading-[1.15] mb-4" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>
-                Your Health,<br />Always Within Reach.
+                {t('landing.heroTitle1')}<br />{t('landing.heroTitle2')}
               </h1>
               {/* Brand moment */}
               <div className="inline-block mb-5">
                 <p className="text-base italic" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#0891B2' }}>
-                  Powered by Sanjeevani
+                  {t('landing.poweredBy')}
                 </p>
                 <svg width="100%" height="6" viewBox="0 0 180 6" preserveAspectRatio="none" className="mt-0.5">
                   <line x1="6" y1="3" x2="174" y2="3" stroke="#E8A820" strokeOpacity="0.6" strokeWidth="1" />
@@ -222,22 +224,22 @@ const LandingPage = () => {
                 </svg>
               </div>
               <p className="text-[17px] leading-[1.7] mb-8" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>
-                Sanjeevani connects patients, hospitals, and emergency responders — so the right information reaches the right hands at the right moment.
+                {t('landing.heroDesc')}
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <button onClick={() => navigate('/patient/signup')} className="px-7 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: '#0891B2' }}>
-                  I'm a Patient →
+                  {t('landing.imPatient')}
                 </button>
                 <button onClick={() => navigate('/register')} className="px-7 py-3 rounded-lg text-sm font-semibold transition-all hover:opacity-90" style={{ border: '1.5px solid #0891B2', color: '#0891B2', background: 'white' }}>
-                  Register My Hospital →
+                  {t('landing.registerHospital')}
                 </button>
               </div>
               <p className="text-xs flex items-center gap-2 flex-wrap" style={{ color: '#94A3B8' }}>
-                Trusted across Rajasthan
+                {t('landing.trusted')}
                 <span className="w-1 h-1 rounded-full inline-block" style={{ background: '#0891B2' }} />
-                ABDM Integrated
+                {t('landing.abdmIntegrated')}
                 <span className="w-1 h-1 rounded-full inline-block" style={{ background: '#0891B2' }} />
-                ABHA Compatible
+                {t('landing.abhaCompatible')}
               </p>
             </div>
             {/* Right */}
@@ -265,15 +267,15 @@ const LandingPage = () => {
                 <path d="M28 10l2 3-2 3-2-3z" fill="#E8A820" fillOpacity="0.8" />
               </svg>
             }
-            title="I'm a Patient"
-            description="Access your digital health records, emergency QR code, AI medication guidance, and connect with hospitals near you."
-            primaryLabel="Create Patient Account"
+            title={t('landing.patientTitle')}
+            description={t('landing.patientDesc')}
+            primaryLabel={t('landing.createPatient')}
             primaryStyle={{ background: '#0891B2' }}
             onPrimary={() => navigate('/patient/signup')}
-            secondaryLabel="Patient Login"
+            secondaryLabel={t('landing.patientLogin')}
             secondaryStyle={{ border: '1.5px solid #0891B2', color: '#0891B2', background: 'white' }}
             onSecondary={() => navigate('/patient/login')}
-            footer="Free for patients · ABHA linked"
+            footer={t('landing.patientFooter')}
           />
           {/* Hospital */}
           <UserCard
@@ -289,17 +291,17 @@ const LandingPage = () => {
                 <path d="M20 6l-4 4h8z" fill="#E8A820" fillOpacity="0.3" />
               </svg>
             }
-            title="We're a Hospital"
-            description="Register your hospital, manage patient records, connect with the 108 ambulance network, and join India's emergency health grid."
-            primaryLabel="Register Hospital"
+            title={t('landing.hospitalTitle')}
+            description={t('landing.hospitalDesc')}
+            primaryLabel={t('landing.registerHospitalBtn')}
             primaryStyle={{ background: '#E8A820', color: '#1E293B' }}
             primaryTextClass="text-[#1E293B]"
             onPrimary={() => navigate('/register')}
-            secondaryLabel="Hospital Login"
+            secondaryLabel={t('landing.hospitalLogin')}
             secondaryStyle={{ border: '1.5px solid #E8A820', color: '#E8A820', background: 'white' }}
             onSecondary={() => navigate('/hospital/login')}
-            footer="License verification required · ABDM integrated"
-            badge="⚡ Emergency Network"
+            footer={t('landing.hospitalFooter')}
+            badge={t('landing.emergencyNetwork')}
           />
           {/* Pharma */}
           <UserCard
@@ -311,15 +313,15 @@ const LandingPage = () => {
                 <path d="M14 20h12M20 14v12" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" />
               </svg>
             }
-            title="I'm a Pharma"
-            description="Register your pharmacy, manage inventory, process digital prescriptions, and provide medication to patients in the network."
-            primaryLabel="Register Pharmacy"
+            title={t('landing.pharmaTitle')}
+            description={t('landing.pharmaDesc')}
+            primaryLabel={t('landing.registerPharma')}
             primaryStyle={{ background: '#8B5CF6' }}
             onPrimary={() => navigate('/pharma/registration')}
-            secondaryLabel="Pharma Login"
+            secondaryLabel={t('landing.pharmaLogin')}
             secondaryStyle={{ border: '1.5px solid #8B5CF6', color: '#8B5CF6', background: 'white' }}
             onSecondary={() => navigate('/pharma/login')}
-            footer="Valid license required · Digital prescriptions"
+            footer={t('landing.pharmaFooter')}
           />
           {/* Admin */}
           <UserCard
@@ -333,12 +335,12 @@ const LandingPage = () => {
                 <path d="M20 22v3" stroke="#64748B" strokeWidth="1" />
               </svg>
             }
-            title="Platform Admin"
-            description="Sanjeevani platform administrators only. Manage hospital verifications, patient data oversight, and system configuration."
-            primaryLabel="Admin Login"
+            title={t('landing.adminTitle')}
+            description={t('landing.adminDesc')}
+            primaryLabel={t('navbar.adminLogin')}
             primaryStyle={{ background: '#1E293B' }}
             onPrimary={() => setAdminModalOpen(true)}
-            footer="Restricted access · Authorised personnel only"
+            footer={t('landing.adminFooter')}
             footerItalic
           />
         </div>
@@ -354,7 +356,7 @@ const LandingPage = () => {
             <div key={i} className="flex items-center">
               <div className="text-center px-6 py-2 md:px-10">
                 <p className="text-[28px] font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#0891B2' }}>{s.number}</p>
-                <p className="text-xs uppercase tracking-[0.06em]" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>{s.label}</p>
+                <p className="text-xs uppercase tracking-[0.06em]" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>{t(s.labelKey)}</p>
               </div>
               {i < stats.length - 1 && <div className="hidden md:block w-px h-10" style={{ background: '#D1EBF1' }} />}
             </div>
@@ -365,7 +367,7 @@ const LandingPage = () => {
       {/* Section 7 — How It Works */}
       <section className="py-16 px-5 md:px-12" style={{ background: '#FFFFFF' }}>
         <h2 className="text-[28px] font-bold text-center mb-12" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>
-          How Sanjeevani Works
+          {t('landing.howItWorks')}
         </h2>
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center">
           {steps.map((s, i) => (
@@ -374,7 +376,7 @@ const LandingPage = () => {
                 <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-3" style={{ background: '#F7FBFC' }}>
                   {s.icon}
                 </div>
-                <p className="text-sm max-w-[160px] mx-auto" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>{s.title}</p>
+                <p className="text-sm max-w-[160px] mx-auto" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>{t(s.titleKey)}</p>
               </div>
               {i < steps.length - 1 && <ArrowRight />}
             </div>
@@ -392,26 +394,26 @@ const LandingPage = () => {
               <span className="text-base font-bold text-white" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>Sanjeevani</span>
             </div>
             <p className="text-[13px] italic" style={{ color: '#94A3B8', fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
-              Building India's Emergency Health Backbone
+              {t('landing.footerTagline')}
             </p>
           </div>
           {/* Platform */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-3">Platform</h4>
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-3">{t('landing.platform')}</h4>
             {['For Patients', 'For Hospitals', 'Emergency QR', 'ABHA Integration'].map(l => (
               <p key={l} className="text-[13px] mb-1.5 cursor-pointer transition-colors hover:text-white" style={{ color: '#94A3B8' }}>{l}</p>
             ))}
           </div>
           {/* Company */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-3">Company</h4>
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-3">{t('landing.company')}</h4>
             {['About', 'Contact', 'Careers', 'Press'].map(l => (
               <p key={l} className="text-[13px] mb-1.5 cursor-pointer transition-colors hover:text-white" style={{ color: '#94A3B8' }}>{l}</p>
             ))}
           </div>
           {/* Legal */}
           <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-3">Legal</h4>
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-white mb-3">{t('landing.legal')}</h4>
             {['Privacy Policy', 'Terms of Service', 'Data Security'].map(l => (
               <p key={l} className="text-[13px] mb-1.5 cursor-pointer transition-colors hover:text-white" style={{ color: '#94A3B8' }}>{l}</p>
             ))}

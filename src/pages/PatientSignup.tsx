@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, Loader2, UserPlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import PatientSignupSidebar from '@/components/patient/PatientSignupSidebar';
 import PatientSuccessScreen from '@/components/patient/PatientSuccessScreen';
 import StepPersonalDetails from '@/components/patient/StepPersonalDetails';
@@ -8,11 +9,13 @@ import StepEmergencyContact from '@/components/patient/StepEmergencyContact';
 import StepMedicalProfile from '@/components/patient/StepMedicalProfile';
 import StepAccountSetup from '@/components/patient/StepAccountSetup';
 import JharokhaFrame from '@/components/registration/JharokhaFrame';
+import GlobalLanguageSwitcher from '@/components/GlobalLanguageSwitcher';
 import { usePatientSignupForm } from '@/hooks/usePatientSignupForm';
 import { PATIENT_STEPS } from '@/types/patient';
 
 const PatientSignup = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const {
     step, formData, errors, phase, patientId, isSubmitting,
     emailStatus, aadhaarStatus,
@@ -47,10 +50,13 @@ const PatientSignup = () => {
         <div className="lg:hidden px-4 py-3 flex items-center justify-between" style={{ background: '#EBF7FA' }}>
           <div>
             <p className="text-xs font-medium" style={{ color: '#0891B2' }}>
-              Step {step} of {PATIENT_STEPS.length} — {PATIENT_STEPS[step - 1].title}
+              {t('signup.stepOf', { current: step, total: PATIENT_STEPS.length })} — {PATIENT_STEPS[step - 1].title}
             </p>
           </div>
-          <button onClick={() => navigate('/')} className="text-xs" style={{ color: '#64748B' }}>← Home</button>
+          <div className="flex items-center gap-2">
+            <GlobalLanguageSwitcher />
+            <button onClick={() => navigate('/')} className="text-xs" style={{ color: '#64748B' }}>{t('signup.home')}</button>
+          </div>
         </div>
         {/* Mobile progress bar */}
         <div className="lg:hidden h-1" style={{ background: '#E2EEF1' }}>
@@ -80,7 +86,7 @@ const PatientSignup = () => {
               {canSkip && (
                 <div className="flex justify-end mb-2">
                   <button type="button" onClick={skipStep} className="text-xs font-medium hover:underline" style={{ color: '#94A3B8' }}>
-                    Skip for now →
+                    {t('signup.skipForNow')}
                   </button>
                 </div>
               )}
@@ -93,13 +99,13 @@ const PatientSignup = () => {
                     <button type="button" onClick={back}
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border transition-all hover:opacity-80"
                       style={{ borderColor: '#E2EEF1', color: '#64748B', background: 'white' }}>
-                      <ArrowLeft className="w-4 h-4" /> Back
+                      <ArrowLeft className="w-4 h-4" /> {t('signup.back')}
                     </button>
                   ) : (
                     <button type="button" onClick={() => navigate('/')}
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border transition-all hover:opacity-80"
                       style={{ borderColor: '#E2EEF1', color: '#64748B', background: 'white' }}>
-                      <ArrowLeft className="w-4 h-4" /> Home
+                      <ArrowLeft className="w-4 h-4" /> {t('signup.goHome')}
                     </button>
                   )}
 
@@ -107,16 +113,16 @@ const PatientSignup = () => {
                     <button type="button" onClick={next}
                       className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90"
                       style={{ background: '#0891B2' }}>
-                      Continue <ArrowRight className="w-4 h-4" />
+                      {t('signup.continue')} <ArrowRight className="w-4 h-4" />
                     </button>
                   ) : (
                     <button type="button" onClick={submit} disabled={isSubmitting}
                       className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50"
                       style={{ background: '#0891B2' }}>
                       {isSubmitting ? (
-                        <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</>
+                        <><Loader2 className="w-4 h-4 animate-spin" /> {t('signup.creating')}</>
                       ) : (
-                        <><UserPlus className="w-4 h-4" /> Create My Health Profile</>
+                        <><UserPlus className="w-4 h-4" /> {t('signup.createProfile')}</>
                       )}
                     </button>
                   )}
@@ -127,9 +133,9 @@ const PatientSignup = () => {
 
           {/* Bottom link */}
           <p className="text-center text-sm mt-6" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>
-            Already have an account?{' '}
+            {t('signup.alreadyHaveAccount')}{' '}
             <button onClick={() => navigate('/patient/login')} className="font-medium hover:underline" style={{ color: '#0891B2' }}>
-              Log in
+              {t('signup.logIn')}
             </button>
           </p>
         </div>

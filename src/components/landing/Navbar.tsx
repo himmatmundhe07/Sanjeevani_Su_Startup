@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import GlobalLanguageSwitcher from '@/components/GlobalLanguageSwitcher';
 
 interface NavbarProps {
   onAdminLogin: () => void;
@@ -17,6 +19,7 @@ const LotusIcon = () => (
 
 const Navbar = ({ onAdminLogin, onScrollToCards }: NavbarProps) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-white flex items-center" style={{ borderBottom: '1px solid #E2EEF1' }}>
@@ -39,29 +42,33 @@ const Navbar = ({ onAdminLogin, onScrollToCards }: NavbarProps) => {
         {/* Right — Desktop */}
         <div className="hidden md:flex items-center gap-6">
           <button onClick={onScrollToCards} className="text-sm transition-colors hover:text-[#0891B2]" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>
-            For Patients
+            {t('navbar.forPatients')}
           </button>
           <button onClick={onScrollToCards} className="text-sm transition-colors hover:text-[#0891B2]" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>
-            For Hospitals
+            {t('navbar.forHospitals')}
           </button>
           <button onClick={onAdminLogin} className="text-sm px-4 py-1.5 rounded-lg border transition-colors hover:border-[#0891B2] hover:text-[#0891B2]" style={{ color: '#64748B', borderColor: '#E2EEF1', fontFamily: 'Inter, sans-serif' }}>
-            Admin Login
+            {t('navbar.adminLogin')}
           </button>
+          <GlobalLanguageSwitcher />
         </div>
 
         {/* Mobile hamburger */}
-        <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)} style={{ color: '#1E293B' }}>
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <GlobalLanguageSwitcher />
+          <button className="p-2" onClick={() => setMobileOpen(!mobileOpen)} style={{ color: '#1E293B' }}>
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="absolute top-16 left-0 right-0 bg-white border-b shadow-lg md:hidden z-50" style={{ borderColor: '#E2EEF1' }}>
           <div className="flex flex-col p-4 gap-3">
-            <button onClick={() => { onScrollToCards(); setMobileOpen(false); }} className="text-sm text-left py-2" style={{ color: '#64748B' }}>For Patients</button>
-            <button onClick={() => { onScrollToCards(); setMobileOpen(false); }} className="text-sm text-left py-2" style={{ color: '#64748B' }}>For Hospitals</button>
-            <button onClick={() => { onAdminLogin(); setMobileOpen(false); }} className="text-sm text-left py-2" style={{ color: '#64748B' }}>Admin Login</button>
+            <button onClick={() => { onScrollToCards(); setMobileOpen(false); }} className="text-sm text-left py-2" style={{ color: '#64748B' }}>{t('navbar.forPatients')}</button>
+            <button onClick={() => { onScrollToCards(); setMobileOpen(false); }} className="text-sm text-left py-2" style={{ color: '#64748B' }}>{t('navbar.forHospitals')}</button>
+            <button onClick={() => { onAdminLogin(); setMobileOpen(false); }} className="text-sm text-left py-2" style={{ color: '#64748B' }}>{t('navbar.adminLogin')}</button>
           </div>
         </div>
       )}

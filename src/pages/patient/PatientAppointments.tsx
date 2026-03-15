@@ -316,7 +316,9 @@ const BookAppointmentModal = ({ patientId, onClose, onSaved }: { patientId: stri
 
   useEffect(() => {
     const fetchHospitals = async () => {
-      const { data } = await supabase.from('hospitals').select('id, hospital_name, city, state');
+      const { data } = await supabase.from('hospitals')
+        .select('id, hospital_name, city, state')
+        .eq('verification_status', 'Verified');
       setHospitals(data || []);
     };
     fetchHospitals();

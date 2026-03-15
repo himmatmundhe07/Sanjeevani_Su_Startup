@@ -4,7 +4,12 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import JharokhaArch from '@/components/admin/JharokhaArch';
 
-const PatientFeedbackForm = ({ prescription, patientId, onClose }: { prescription: any; patientId: string; onClose: () => void }) => {
+const PatientFeedbackForm = ({ prescription, patientId, onClose, onCoinsEarned }: {
+  prescription: any;
+  patientId: string;
+  onClose: () => void;
+  onCoinsEarned?: (coins: number) => void;
+}) => {
   const [step, setStep] = useState(1);
   const [overallRating, setOverallRating] = useState<number>(0);
   const [symptomsResolved, setSymptomsResolved] = useState<boolean | null>(null);
@@ -23,6 +28,44 @@ const PatientFeedbackForm = ({ prescription, patientId, onClose }: { prescriptio
   const sideEffectOptions = ['Nausea', 'Vomiting', 'Dizziness', 'Headache', 'Rash', 'Stomach pain', 'Drowsiness', 'Dry mouth', 'Fever', 'Difficulty breathing'];
 
   if (!prescription) return null;
+
+  // ── Award coins helper ────────────────────────────────────────────────────
+  const awardCoins = async (feedbackId: string | null) => {
+    // Random between 10–20 coins to keep it exciting
+    const coins = Math.floor(Math.random() * 11) + 10; // 10 to 20
+    const db = supabase as any;
+
+    // Upsert wallet
+    const { data: existing } = await db
+      .from('patient_coins')
+      .select('balance, lifetime_earned')
+      .eq('patient_id', patientId)
+      .maybeSingle();
+
+    const newBalance = (existing?.balance ?? 0) + coins;
+    const newLifetime = (existing?.lifetime_earned ?? 0) + coins;
+    const newTier =
+      newLifetime >= 500 ? 'Platinum' :
+      newLifetime >= 200 ? 'Gold' :
+      newLifetime >= 100 ? 'Silver' : 'Bronze';
+
+    await db.from('patient_coins').upsert([{
+      patient_id: patientId,
+      balance: newBalance,
+      lifetime_earned: newLifetime,
+      tier: newTier,
+      updated_at: new Date().toISOString(),
+    }], { onConflict: 'patient_id' });
+
+    await db.from('coin_transactions').insert([{
+      patient_id: patientId,
+      coins,
+      reason: 'feedback_submitted',
+      reference_id: feedbackId,
+    }]);
+
+    return coins;
+  };
 
   const handleSubmit = async () => {
     setSaving(true);
@@ -65,7 +108,19 @@ const PatientFeedbackForm = ({ prescription, patientId, onClose }: { prescriptio
       }]);
 
       if (error) throw error;
-      toast.success('✅ Feedback submitted. Dr. ' + prescription.doctor_name + ' will review it.');
+
+      // ── Award coins ──────────────────────────────────────────────────────
+      try {
+        const coinsEarned = await awardCoins(null);
+        onCoinsEarned?.(coinsEarned);
+        toast.success(
+          `✅ Feedback submitted! +${coinsEarned} 🪙 coins earned!`,
+          { duration: 4000 }
+        );
+      } catch (_coinErr) {
+        // coin error is non-blocking
+        toast.success('✅ Feedback submitted. Dr. ' + prescription.doctor_name + ' will review it.');
+      }
       onClose();
     } catch (e: any) {
       toast.error('Failed to submit feedback: ' + (e.message || ''));

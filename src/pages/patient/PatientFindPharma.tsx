@@ -9,8 +9,10 @@ const PatientFindPharma = () => {
   const { patient } = usePatientContext();
   const [pharmacies, setPharmacies] = useState<any[]>([]);
   const [search, setSearch] = useState('');
+  const [areaFilter, setAreaFilter] = useState('All Areas');
   const [loading, setLoading] = useState(true);
   const [selectedPharma, setSelectedPharma] = useState<any>(null);
+  const [uniqueAreas, setUniqueAreas] = useState<string[]>(['All Areas']);
 
   // Since we don't have a 'pharmacies' table yet, we'll mock some data 
   // but also try to fetch from auth metadata if possible (complex in client-side)
@@ -18,28 +20,42 @@ const PatientFindPharma = () => {
   
   const fetchPharmacies = async () => {
     setLoading(true);
-    // This is where the real fetch would happen:
-    // const { data } = await supabase.from('pharmacies').select('*').ilike('pharmacy_name', `%${search}%`);
-    
-    // Mock data for demonstration
+    let q = (supabase as any).from('pharmacies').select('*');
+    if (areaFilter !== 'All Areas') {
+      q = q.or(`city.eq.${areaFilter},district.eq.${areaFilter},state.eq.${areaFilter}`);
+    }
+    const { data } = await q;
+
+    // Use mock data if no real data is found yet (since we just added the table schema)
     const mockPharmacies = [
       { id: '1', pharmacy_name: 'City Care Pharmacy', city: 'Jaipur', state: 'Rajasthan', phone: '9876543210', address: '123 Main St, C-Scheme', open_24x7: true, delivery: true },
       { id: '2', pharmacy_name: 'Wellness Medicos', city: 'Ahmedabad', state: 'Gujarat', phone: '9822334455', address: 'Satellite Area', open_24x7: false, delivery: true },
       { id: '3', pharmacy_name: 'Sanjeevani Pharma', city: 'Surat', state: 'Gujarat', phone: '9988776655', address: 'Varachha Road', open_24x7: true, delivery: false },
     ];
     
-    const filtered = mockPharmacies.filter(p => 
-      p.pharmacy_name.toLowerCase().includes(search.toLowerCase()) || 
-      p.city.toLowerCase().includes(search.toLowerCase())
-    );
+    let allP = (data && data.length > 0) ? data : mockPharmacies;
     
-    setTimeout(() => {
-      setPharmacies(filtered);
-      setLoading(false);
-    }, 500);
+    if (areaFilter === 'All Areas' && uniqueAreas.length === 1) {
+      const areas = Array.from(new Set(allP.map((p: any) => p.district || p.city || p.state).filter(Boolean))) as string[];
+      setUniqueAreas(['All Areas', ...areas]);
+    }
+
+    if (areaFilter !== 'All Areas' && (!data || data.length === 0)) {
+       allP = allP.filter(p => p.district === areaFilter || p.city === areaFilter || p.state === areaFilter);
+    }
+
+    if (search) {
+      allP = allP.filter(p => 
+        p.pharmacy_name?.toLowerCase().includes(search.toLowerCase()) || 
+        p.city?.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    
+    setPharmacies(allP);
+    setLoading(false);
   };
 
-  useEffect(() => { fetchPharmacies(); }, [search]);
+  useEffect(() => { fetchPharmacies(); }, [search, areaFilter]);
 
   return (
     <div className="space-y-6">
@@ -47,13 +63,20 @@ const PatientFindPharma = () => {
         <h2 className="text-lg font-bold mb-3" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>
           💊 Find Pharmacies & Medicines
         </h2>
-        <div className="relative">
-          <Search size={16} className="absolute left-3 top-2.5" style={{ color: '#94A3B8' }} />
-          <input className="field-input pl-9" placeholder="Search by pharmacy name, city..."
-            value={search} onChange={e => setSearch(e.target.value)} />
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <Search size={16} className="absolute left-3 top-2.5" style={{ color: '#94A3B8' }} />
+            <input className="field-input pl-9" placeholder="Search by pharmacy name, city..."
+              value={search} onChange={e => setSearch(e.target.value)} />
+          </div>
+          <div className="w-[180px]">
+            <select value={areaFilter} onChange={e => setAreaFilter(e.target.value)} className="field-input">
+              {uniqueAreas.map(a => <option key={a} value={a}>{a}</option>)}
+            </select>
+          </div>
         </div>
         <p className="text-[12px] mt-2" style={{ color: '#94A3B8' }}>
-          Connect with trusted pharmacies in the Sanjeevani network.
+          Connect with trusted pharmacies in your area.
         </p>
       </div>
 

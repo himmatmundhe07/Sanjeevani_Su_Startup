@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Loader2, Eye, EyeOff, ArrowLeft, User, Building2, Pill, ShieldCheck } from 'lucide-react';
 import GlobalLanguageSwitcher from '@/components/GlobalLanguageSwitcher';
+import AdminLoginModal from '@/components/landing/AdminLoginModal';
 
 /* ─── SVG Helpers ─── */
 const JharokhaArch = ({ color = '#0891B2' }: { color?: string }) => (
@@ -61,6 +62,7 @@ const UnifiedLogin = () => {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSent, setForgotSent] = useState(false);
   const [forgotLoading, setForgotLoading] = useState(false);
+  const [adminModalOpen, setAdminModalOpen] = useState(false);
 
   const activeRole = ROLES.find(r => r.key === role)!;
 
@@ -312,14 +314,20 @@ const UnifiedLogin = () => {
             </div>
           </div>
 
-          {/* Back home */}
-          <p className="text-center mt-4">
-            <button onClick={() => navigate('/')} className="inline-flex items-center gap-1 text-xs hover:underline" style={{ color: '#64748B' }}>
-              <ArrowLeft className="w-3 h-3" /> Back to home
+          {/* Admin Login / Back home */}
+          <div className="flex items-center justify-between mt-4 px-2">
+            <button onClick={() => navigate('/')} className="inline-flex items-center gap-1.5 text-xs font-medium hover:underline" style={{ color: '#64748B' }}>
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to home
             </button>
-          </p>
+            <button onClick={() => setAdminModalOpen(true)} className="inline-flex items-center gap-1.5 text-xs font-semibold hover:underline" style={{ color: '#1E293B' }}>
+              <ShieldCheck className="w-4 h-4" /> Admin Login
+            </button>
+          </div>
         </div>
       </div>
+      
+      {/* Admin Login Modal */}
+      <AdminLoginModal open={adminModalOpen} onClose={() => setAdminModalOpen(false)} />
     </div>
   );
 };

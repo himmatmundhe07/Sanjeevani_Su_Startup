@@ -23,7 +23,7 @@ INSERT INTO subscription_plans
    free_appointments_per_year, has_priority_booking, has_fast_booking)
 VALUES
   ('Sanjeevani Free',    'free',   0,    1, 0, FALSE, FALSE),
-  ('Sanjeevani+ Single', 'single', 5000, 1, 3, TRUE,  TRUE),
+  ('Sanjeevani+ Single', 'single', 3000, 1, 3, TRUE,  TRUE),
   ('Sanjeevani+ Family', 'family', 6000, 4, 3, TRUE,  TRUE);
 
 -- Allow public read

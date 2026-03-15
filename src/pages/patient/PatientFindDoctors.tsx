@@ -10,20 +10,35 @@ const PatientFindDoctors = () => {
   const { patient } = usePatientContext();
   const [hospitals, setHospitals] = useState<any[]>([]);
   const [search, setSearch] = useState('');
+  const [areaFilter, setAreaFilter] = useState('All Areas');
   const [loading, setLoading] = useState(true);
   const [selectedHospital, setSelectedHospital] = useState<any>(null);
   const [showBooking, setShowBooking] = useState(false);
+  const [uniqueAreas, setUniqueAreas] = useState<string[]>(['All Areas']);
 
   const fetchHospitals = async () => {
     setLoading(true);
     let q = supabase.from('hospitals').select('*').eq('verification_status', 'Verified');
+    
+    // First, let's fetch all active verified hospitals to build area filter
+    const { data: allData } = await supabase.from('hospitals').select('city, district, state').eq('verification_status', 'Verified');
+    if (allData) {
+      const areas = Array.from(new Set(allData.flatMap((d: any) => [d.district, d.city, d.state]).filter(Boolean))) as string[];
+      setUniqueAreas(['All Areas', ...areas]);
+    }
+
+    if (areaFilter !== 'All Areas') {
+      q = q.or(`city.eq.${areaFilter},district.eq.${areaFilter},state.eq.${areaFilter}`);
+    }
+    
     if (search) q = q.or(`city.ilike.%${search}%,hospital_name.ilike.%${search}%,specializations.cs.{${search}}`);
+    
     const { data } = await q.limit(20);
     setHospitals(data || []);
     setLoading(false);
   };
 
-  useEffect(() => { fetchHospitals(); }, [search]);
+  useEffect(() => { fetchHospitals(); }, [search, areaFilter]);
 
   return (
     <div className="space-y-6">
@@ -32,13 +47,20 @@ const PatientFindDoctors = () => {
         <h2 className="text-lg font-bold mb-3" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>
           🏥 Find Hospitals & Doctors
         </h2>
-        <div className="relative">
-          <Search size={16} className="absolute left-3 top-2.5" style={{ color: '#94A3B8' }} />
-          <input className="field-input pl-9" placeholder="Search by hospital name, city, or specialization..."
-            value={search} onChange={e => setSearch(e.target.value)} />
+        <div className="flex gap-3">
+          <div className="relative flex-1">
+            <Search size={16} className="absolute left-3 top-2.5" style={{ color: '#94A3B8' }} />
+            <input className="field-input pl-9" placeholder="Search by hospital name, city, or specialization..."
+              value={search} onChange={e => setSearch(e.target.value)} />
+          </div>
+          <div className="w-[180px]">
+            <select value={areaFilter} onChange={e => setAreaFilter(e.target.value)} className="field-input">
+              {uniqueAreas.map(a => <option key={a} value={a}>{a}</option>)}
+            </select>
+          </div>
         </div>
         <p className="text-[12px] mt-2" style={{ color: '#94A3B8' }}>
-          Showing {hospitals.length} verified hospitals {search && `matching "${search}"`}
+          Showing {hospitals.length} verified hospitals {areaFilter !== 'All Areas' ? `in ${areaFilter}` : ''} {search && `matching "${search}"`}
         </p>
       </div>
 

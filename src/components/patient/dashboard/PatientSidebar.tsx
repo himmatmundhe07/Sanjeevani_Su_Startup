@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Home, Pill, ClipboardList, Calendar, Search, ShieldAlert, Settings, LogOut, X, QrCode, Store, Crown } from 'lucide-react';
+import { Home, Pill, ClipboardList, Calendar, Search, ShieldAlert, Settings, LogOut, X, QrCode, Store, Crown, Activity } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useLanguage } from '@/contexts/LanguageContext';
 import type { PatientProfile } from './PatientProtectedRoute';
@@ -9,6 +9,7 @@ const navItems = [
   { labelKey: 'sidebar.medicalRecords', icon: Pill, path: '/patient/dashboard/records' },
   { labelKey: 'sidebar.labReports', icon: ClipboardList, path: '/patient/dashboard/reports' },
   { labelKey: 'sidebar.appointments', icon: Calendar, path: '/patient/dashboard/appointments' },
+  { labelKey: '🏃 My Recovery Plan', icon: Activity, path: '/patient/dashboard/fitness' },
   { labelKey: 'sidebar.findDoctors', icon: Search, path: '/patient/dashboard/find' },
   { labelKey: 'sidebar.findPharmacy', icon: Store, path: '/patient/dashboard/pharmacy' },
   { labelKey: 'Sanjeevani+ Plans', icon: Crown, path: '/pricing' },

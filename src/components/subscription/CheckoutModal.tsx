@@ -12,7 +12,7 @@ interface CheckoutModalProps {
 }
 
 const PLAN_DETAILS = {
-  single: { name: 'Sanjeevani+ Single', price: 5000, members: 1, color: '#0891B2' },
+  single: { name: 'Sanjeevani+ Single', price: 3000, members: 1, color: '#0891B2' },
   family: { name: 'Sanjeevani+ Family', price: 6000, members: 4, color: '#F59E0B' },
 };
 

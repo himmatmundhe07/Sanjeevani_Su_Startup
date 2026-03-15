@@ -10,6 +10,7 @@ export interface PharmaProfile {
   phone: string | null;
   address: string | null;
   license_number: string | null;
+  verification_status?: string | null;
 }
 
 export function usePharmaContext() {
@@ -26,17 +27,42 @@ export function usePharmaContext() {
         navigate('/pharma/login', { replace: true });
         return;
       }
-      
+
       const role = user.user_metadata?.role;
       if (role !== 'pharma') {
         navigate('/', { replace: true });
         return;
       }
 
-      // Fetch existing pharmacy profile from the database
-      let { data: profile } = await supabase.from('pharmacies' as any).select('*').eq('id', user.id).single();
+      // ── Check active subscription ─────────────────────────────────────────
+      const { data: subscription } = await (supabase as any)
+        .from('pharmacy_subscriptions')
+        .select('id, status, expires_at')
+        .eq('pharmacy_id', user.id)
+        .eq('status', 'active')
+        .order('expires_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
 
-      // Auto-create profile if first time logging in
+      const hasActiveSub =
+        subscription &&
+        subscription.status === 'active' &&
+        new Date(subscription.expires_at) > new Date();
+
+      if (!hasActiveSub) {
+        // Redirect to subscription-required page — the pharmacy has logged in
+        // but hasn't paid / admin hasn't verified yet.
+        navigate('/pharma/subscription-required', { replace: true });
+        return;
+      }
+
+      // ── Fetch / auto-create pharmacy profile ───────────────────────────────
+      let { data: profile } = await (supabase as any)
+        .from('pharmacies')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
       if (!profile) {
         const newPharma: PharmaProfile = {
           id: user.id,
@@ -45,20 +71,22 @@ export function usePharmaContext() {
           email: user.email || '',
           phone: null,
           address: null,
-          license_number: null
+          license_number: null,
+          verification_status: 'Pending',
         };
-        const { data: inserted, error } = await supabase.from('pharmacies' as any).insert([newPharma]).select().single();
-        if (!error && inserted) {
-           profile = inserted as any;
-        } else {
-           profile = newPharma as any; // Fallback to local if table isn't created yet
-        }
+        const { data: inserted, error } = await (supabase as any)
+          .from('pharmacies')
+          .insert([newPharma])
+          .select()
+          .single();
+        profile = (!error && inserted) ? inserted : newPharma;
       }
 
       setPharma(profile as unknown as PharmaProfile);
       setAuthorized(true);
       setLoading(false);
     };
+
     check();
   }, [navigate]);
 

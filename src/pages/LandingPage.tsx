@@ -1,8 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Navbar from '@/components/landing/Navbar';
 import AdminLoginModal from '@/components/landing/AdminLoginModal';
+import { Shield } from 'lucide-react';
 
 /* ─── SVG Helpers ─── */
 const LotusIcon = ({ size = 16, className = '' }: { size?: number; className?: string }) => (
@@ -75,67 +76,7 @@ const HeroIllustration = () => (
   </div>
 );
 
-/* ─── User Type Card ─── */
-interface UserCardProps {
-  archColor: string;
-  accentColor: string;
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  primaryLabel: string;
-  primaryStyle: React.CSSProperties;
-  primaryTextClass?: string;
-  onPrimary: () => void;
-  secondaryLabel?: string;
-  secondaryStyle?: React.CSSProperties;
-  onSecondary?: () => void;
-  footer: string;
-  footerItalic?: boolean;
-  badge?: string;
-}
-
-const UserCard = ({
-  archColor, accentColor, icon, title, description,
-  primaryLabel, primaryStyle, primaryTextClass = 'text-white', onPrimary,
-  secondaryLabel, secondaryStyle, onSecondary,
-  footer, footerItalic, badge,
-}: UserCardProps) => (
-  <div className="relative flex flex-col bg-white rounded-xl border transition-all duration-200 hover:shadow-lg group"
-    style={{ borderColor: '#E2EEF1' }}
-    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#0891B2'; }}
-    onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#E2EEF1'; }}>
-    {badge && (
-      <span className="absolute -top-3 right-4 text-white text-[11px] font-medium px-3 py-1 rounded-full z-10"
-        style={{ background: '#0891B2' }}>
-        {badge}
-      </span>
-    )}
-    <JharokhaArch color={archColor} opacity={0.2} />
-    <div style={{ height: 4, background: accentColor }} />
-    <div className="flex flex-col flex-1 p-6">
-      <div className="flex justify-center mb-4">{icon}</div>
-      <h3 className="text-[22px] font-bold text-center mb-3" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#1E293B' }}>
-        {title}
-      </h3>
-      <p className="text-sm text-center leading-relaxed mb-6" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>
-        {description}
-      </p>
-      <div className="mt-auto space-y-3">
-        <button onClick={onPrimary} className={`w-full py-2.5 rounded-lg text-sm font-semibold transition-all hover:opacity-90 ${primaryTextClass}`} style={primaryStyle}>
-          {primaryLabel}
-        </button>
-        {secondaryLabel && onSecondary && (
-          <button onClick={onSecondary} className="w-full py-2.5 rounded-lg text-sm font-semibold transition-all hover:opacity-90" style={secondaryStyle}>
-            {secondaryLabel}
-          </button>
-        )}
-      </div>
-      <p className={`text-xs text-center mt-4 ${footerItalic ? 'italic' : ''}`} style={{ color: '#94A3B8' }}>
-        {footer}
-      </p>
-    </div>
-  </div>
-);
+/* ─── Removed User Type Card component ─── */
 
 /* ─── Stats ─── */
 const stats = [
@@ -190,15 +131,10 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [adminModalOpen, setAdminModalOpen] = useState(false);
-  const cardsRef = useRef<HTMLDivElement>(null);
-
-  const scrollToCards = () => {
-    cardsRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <div className="min-h-screen" style={{ background: '#F7FBFC' }}>
-      <Navbar onAdminLogin={() => setAdminModalOpen(true)} onScrollToCards={scrollToCards} />
+      <Navbar onAdminLogin={() => setAdminModalOpen(true)} onScrollToCards={() => navigate('/login')} />
 
       {/* Section 2 — Hero */}
       <section className="min-h-[88vh] flex items-center pt-16" style={{ background: '#F7FBFC' }}>
@@ -226,12 +162,12 @@ const LandingPage = () => {
               <p className="text-[17px] leading-[1.7] mb-8" style={{ color: '#64748B', fontFamily: 'Inter, sans-serif' }}>
                 {t('landing.heroDesc')}
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                <button onClick={() => navigate('/login?role=patient')} className="px-7 py-3 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90" style={{ background: '#0891B2' }}>
-                  {t('landing.imPatient')} <span className="ml-1 opacity-80">(Login / Register)</span>
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <button onClick={() => navigate('/login')} className="px-8 py-3.5 rounded-xl text-base font-bold text-white transition-all hover:opacity-90 shadow-lg flex items-center justify-center gap-2" style={{ background: '#0891B2', boxShadow: '0 4px 14px rgba(8, 145, 178, 0.3)' }}>
+                  Access Sanjeevani Portal <span className="text-sm font-normal opacity-90 pl-1"> (Login / Register)</span> →
                 </button>
-                <button onClick={() => navigate('/login?role=hospital')} className="px-7 py-3 rounded-lg text-sm font-semibold transition-all hover:opacity-90" style={{ border: '1.5px solid #0891B2', color: '#0891B2', background: 'white' }}>
-                  {t('landing.registerHospital')} <span className="ml-1 opacity-80">(Login / Register)</span>
+                <button onClick={() => setAdminModalOpen(true)} className="px-8 py-3.5 rounded-xl text-base font-bold transition-all hover:opacity-90 flex items-center justify-center gap-2" style={{ border: '2px solid #1E293B', color: '#1E293B', background: 'transparent' }}>
+                  Admin Login
                 </button>
               </div>
               <p className="text-xs flex items-center gap-2 flex-wrap" style={{ color: '#94A3B8' }}>
@@ -253,89 +189,6 @@ const LandingPage = () => {
       {/* Section 3 — Mehraab Divider */}
       <MehraabDivider />
 
-      {/* Section 4 — User Type Cards */}
-      <section ref={cardsRef} className="py-16 px-5 md:px-12" style={{ background: '#FFFFFF' }}>
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Patient */}
-          <UserCard
-            archColor="#0891B2"
-            accentColor="#0891B2"
-            icon={
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <circle cx="20" cy="14" r="8" fill="#0891B2" fillOpacity="0.12" stroke="#0891B2" strokeWidth="1.5" />
-                <path d="M10 34c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="none" stroke="#0891B2" strokeWidth="1.5" />
-                <path d="M28 10l2 3-2 3-2-3z" fill="#E8A820" fillOpacity="0.8" />
-              </svg>
-            }
-            title={t('landing.patientTitle')}
-            description={t('landing.patientDesc')}
-            primaryLabel={t('landing.patientLoginSignup', 'Patient Portal (Login / Register)')}
-            primaryStyle={{ background: '#0891B2' }}
-            onPrimary={() => navigate('/login?role=patient')}
-            footer={t('landing.patientFooter')}
-          />
-          {/* Hospital */}
-          <UserCard
-            archColor="#E8A820"
-            accentColor="#E8A820"
-            icon={
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <rect x="8" y="14" width="24" height="20" rx="3" fill="#E8A820" fillOpacity="0.1" stroke="#E8A820" strokeWidth="1.5" />
-                <rect x="16" y="22" width="8" height="12" rx="1" fill="#0891B2" fillOpacity="0.15" />
-                <rect x="12" y="18" width="6" height="6" rx="1" fill="#0891B2" fillOpacity="0.1" />
-                <rect x="22" y="18" width="6" height="6" rx="1" fill="#0891B2" fillOpacity="0.1" />
-                <rect x="14" y="10" width="12" height="4" rx="1" fill="#E8A820" fillOpacity="0.2" />
-                <path d="M20 6l-4 4h8z" fill="#E8A820" fillOpacity="0.3" />
-              </svg>
-            }
-            title={t('landing.hospitalTitle')}
-            description={t('landing.hospitalDesc')}
-            primaryLabel={t('landing.hospitalLoginSignup', 'Hospital Portal (Login / Register)')}
-            primaryStyle={{ background: '#E8A820', color: '#1E293B' }}
-            primaryTextClass="text-[#1E293B]"
-            onPrimary={() => navigate('/login?role=hospital')}
-            footer={t('landing.hospitalFooter')}
-            badge={t('landing.emergencyNetwork')}
-          />
-          {/* Pharma */}
-          <UserCard
-            archColor="#8B5CF6"
-            accentColor="#8B5CF6"
-            icon={
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <rect x="10" y="10" width="20" height="20" rx="4" fill="#8B5CF6" fillOpacity="0.1" stroke="#8B5CF6" strokeWidth="1.5" />
-                <path d="M14 20h12M20 14v12" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            }
-            title={t('landing.pharmaTitle')}
-            description={t('landing.pharmaDesc')}
-            primaryLabel={t('landing.pharmaLoginSignup', 'Pharma Portal (Login / Register)')}
-            primaryStyle={{ background: '#8B5CF6' }}
-            onPrimary={() => navigate('/login?role=pharma')}
-            footer={t('landing.pharmaFooter')}
-          />
-          {/* Admin */}
-          <UserCard
-            archColor="#64748B"
-            accentColor="#64748B"
-            icon={
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                <path d="M20 4l-10 8v14a4 4 0 004 4h12a4 4 0 004-4V12L20 4z" fill="#64748B" fillOpacity="0.08" stroke="#64748B" strokeWidth="1.5" />
-                <rect x="16" y="18" width="8" height="8" rx="2" fill="#64748B" fillOpacity="0.15" />
-                <circle cx="20" cy="20" r="2" fill="#64748B" fillOpacity="0.3" />
-                <path d="M20 22v3" stroke="#64748B" strokeWidth="1" />
-              </svg>
-            }
-            title={t('landing.adminTitle')}
-            description={t('landing.adminDesc')}
-            primaryLabel={t('navbar.adminLogin')}
-            primaryStyle={{ background: '#1E293B' }}
-            onPrimary={() => setAdminModalOpen(true)}
-            footer={t('landing.adminFooter')}
-            footerItalic
-          />
-        </div>
-      </section>
 
       {/* Section 5 — Mandana Divider */}
       <div className="mandana-divider" style={{ margin: 0 }} />

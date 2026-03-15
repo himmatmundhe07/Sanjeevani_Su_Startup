@@ -13,6 +13,11 @@ import PharmaRegistration from "./pages/PharmaRegistration";
 import PharmaDashboardLayout from "./pages/pharma/PharmaDashboardLayout";
 import PharmaOverview from "./pages/pharma/PharmaOverview";
 import PharmaAnalyticsPage from "./pages/pharma/PharmaAnalyticsPage";
+import PharmaSubscriptionRequired from "./pages/pharma/PharmaSubscriptionRequired";
+import PharmaRevenue from "./pages/pharma/PharmaRevenue";
+import PharmaStatements from "./pages/pharma/PharmaStatements";
+import PharmaBankDetails from "./pages/pharma/PharmaBankDetails";
+import PharmaAgreement from "./pages/pharma/PharmaAgreement";
 import NotFound from "./pages/NotFound";
 import AdminLayout from "./pages/admin/AdminLayout";
 import Overview from "./pages/admin/Overview";
@@ -29,6 +34,7 @@ import PatientFindDoctors from "./pages/patient/PatientFindDoctors";
 import PatientFindPharma from "./pages/patient/PatientFindPharma";
 import PatientEmergency from "./pages/patient/PatientEmergency";
 import PatientSettings from "./pages/patient/PatientSettings";
+import PatientFitness from "./pages/patient/PatientFitness";
 import HospitalDashboardLayout from "./pages/hospital/HospitalDashboardLayout";
 import HospitalOverview from "./pages/hospital/HospitalOverview";
 import HospitalPatients from "./pages/hospital/HospitalPatients";
@@ -48,6 +54,7 @@ import HospitalPrescriptionAnalytics from "./pages/hospital/HospitalPrescription
 import PublicQRProfile from "./pages/PublicQRProfile";
 import PricingPage from "./pages/PricingPage";
 import AdminSubscriptions from "./pages/admin/AdminSubscriptions";
+import AdminPharmacyApprovals from "./pages/admin/AdminPharmacyApprovals";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +82,7 @@ const App = () => (
             <Route path="find" element={<PatientFindDoctors />} />
             <Route path="pharmacy" element={<PatientFindPharma />} />
             <Route path="emergency" element={<PatientEmergency />} />
+            <Route path="fitness" element={<PatientFitness />} />
             <Route path="settings" element={<PatientSettings />} />
           </Route>
           <Route path="/patient/reset-password" element={<PatientResetPassword />} />
@@ -96,19 +104,18 @@ const App = () => (
             <Route path="documents" element={<HospitalDocuments />} />
             <Route path="settings" element={<HospitalSettings />} />
           </Route>
-          <Route path="/pharma/registration" element={<PharmaRegistration />} />
+          <Route path="/pharma/register" element={<PharmaRegistration />} />
+          <Route path="/pharma/subscription-required" element={<PharmaSubscriptionRequired />} />
           {/* Pharma dashboard routes */}
           <Route path="/pharma/dashboard" element={<PharmaDashboardLayout />}>
             <Route index element={<PharmaOverview />} />
-            <Route path="effectiveness" element={<PharmaAnalyticsPage />} />
-            <Route path="demographics" element={<PharmaAnalyticsPage />} />
-            <Route path="disease-performance" element={<PharmaAnalyticsPage />} />
-            <Route path="adherence" element={<PharmaAnalyticsPage />} />
-            <Route path="side-effects" element={<PharmaAnalyticsPage />} />
-            <Route path="geographic" element={<PharmaAnalyticsPage />} />
-            <Route path="prescription-trends" element={<PharmaAnalyticsPage />} />
-            <Route path="forecast" element={<PharmaAnalyticsPage />} />
-            <Route path="comparison" element={<PharmaAnalyticsPage />} />
+            <Route path="revenue" element={<PharmaRevenue />} />
+            <Route path="statements" element={<PharmaStatements />} />
+            <Route path="bank" element={<PharmaBankDetails />} />
+            <Route path="agreement" element={<PharmaAgreement />} />
+            <Route path="prescriptions" element={<div>Prescriptions Page</div>} />
+            <Route path="orders" element={<div>Orders Page</div>} />
+            <Route path="settings" element={<div>Settings Page</div>} />
           </Route>
           {/* Admin routes */}
           <Route path="/admin" element={<AdminLayout />}>
@@ -118,6 +125,7 @@ const App = () => (
             <Route path="logs" element={<ActivityLog />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="subscriptions" element={<AdminSubscriptions />} />
+            <Route path="pharmacy-approvals" element={<AdminPharmacyApprovals />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="/qr/:patientId" element={<PublicQRProfile />} />

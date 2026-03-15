@@ -11,6 +11,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 import TagInput from '@/components/patient/TagInput';
 import type { HospitalProfile } from '@/hooks/useHospitalContext';
+import DoctorFitnessPanel from '@/components/hospital/DoctorFitnessPanel';
 
 type RelType = 'All' | 'Admitted' | 'Outpatient' | 'Discharged' | 'Emergency';
 
@@ -51,6 +52,7 @@ const HospitalPatients = () => {
   const [patients, setPatients] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<RelType>('All');
+  const [areaFilter, setAreaFilter] = useState<string>('All Areas');
   const [loading, setLoading] = useState(true);
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
   const [drawerTab, setDrawerTab] = useState('overview');
@@ -103,7 +105,7 @@ const HospitalPatients = () => {
     if (!hospital) return;
     let q = supabase
       .from('hospital_patients')
-      .select('*, patients(id, full_name, profile_photo_url, date_of_birth, gender, blood_group, abha_id, allergies, chronic_conditions, current_medications, past_surgeries, emergency_contact_name, emergency_contact_phone, emergency_contact_relation, insurance_provider, insurance_policy_no, phone, organ_donor, email)')
+      .select('*, patients(id, full_name, profile_photo_url, date_of_birth, gender, blood_group, abha_id, allergies, chronic_conditions, current_medications, past_surgeries, emergency_contact_name, emergency_contact_phone, emergency_contact_relation, insurance_provider, insurance_policy_no, phone, organ_donor, email, city, district, state)')
       .eq('hospital_id', hospital.id)
       .order('admitted_at', { ascending: false });
     if (filter !== 'All') q = q.eq('relationship_type', filter);
@@ -463,12 +465,16 @@ const HospitalPatients = () => {
   };
 
   const filtered = patients.filter(p => {
+    const area = p.patients?.district || p.patients?.city || p.patients?.state;
+    if (areaFilter !== 'All Areas' && area !== areaFilter) return false;
+
     if (!search) return true;
     const s = search.toLowerCase();
     return (p.patients?.full_name?.toLowerCase() || '').includes(s) || (p.patients?.abha_id?.toLowerCase() || '').includes(s) || (p.diagnosis?.toLowerCase() || '').includes(s);
   });
 
   const tabs: RelType[] = ['All', 'Admitted', 'Outpatient', 'Discharged', 'Emergency'];
+  const uniqueAreas = ['All Areas', ...Array.from(new Set(patients.map(p => p.patients?.district || p.patients?.city || p.patients?.state).filter(Boolean)))];
 
   // Medicine status helper
   const getMedStatus = (med: any) => {
@@ -487,9 +493,14 @@ const HospitalPatients = () => {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
+        <div className="relative flex-1 max-w-[300px]">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#94A3B8' }} />
-          <Input placeholder="Search by patient name, ABHA ID, or diagnosis..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 text-[13px]" style={{ borderColor: '#E2EEF1' }} />
+          <Input placeholder="Search name, ABHA ID..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 text-[13px]" style={{ borderColor: '#E2EEF1' }} />
+        </div>
+        <div className="flex-1 max-w-[200px]">
+          <select value={areaFilter} onChange={e => setAreaFilter(e.target.value)} className="w-full text-[13px] rounded-md border px-3 py-2" style={{ borderColor: '#E2EEF1', height: '40px' }}>
+            {uniqueAreas.map(a => <option key={a as string} value={a as string}>{a as string}</option>)}
+          </select>
         </div>
         <div className="flex gap-1 overflow-x-auto">
           {tabs.map(t => (
@@ -604,6 +615,7 @@ const HospitalPatients = () => {
                   <TabsTrigger value="treatment" className="text-[11px]">Active Treatment</TabsTrigger>
                   <TabsTrigger value="prescriptions" className="text-[11px]">💊 Prescriptions</TabsTrigger>
                   <TabsTrigger value="billing" className="text-[11px]">Billing</TabsTrigger>
+                  <TabsTrigger value="fitness" className="text-[11px]">🏃 Recovery Fitness</TabsTrigger>
                 </TabsList>
 
                 {/* TAB: Overview */}
@@ -1138,6 +1150,15 @@ const HospitalPatients = () => {
                 {/* TAB: Billing */}
                 <TabsContent value="billing">
                   <p className="text-[13px] italic" style={{ color: '#64748B' }}>Billing details available in the Billing page.</p>
+                </TabsContent>
+
+                {/* TAB: Recovery Fitness */}
+                <TabsContent value="fitness">
+                  <DoctorFitnessPanel
+                    patientId={selectedPatient.patients?.id || selectedPatient.patient_id}
+                    hospitalId={hospital?.id || ''}
+                    adminName={hospital?.admin_name || 'Doctor'}
+                  />
                 </TabsContent>
               </Tabs>
             </div>

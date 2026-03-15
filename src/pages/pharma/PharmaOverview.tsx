@@ -107,13 +107,13 @@ const PharmaOverview = () => {
   const reportedSideEffectsCount = feedbacks.filter(f => f.had_side_effects).length;
 
   // Derived Geographic Data based on real patient IDs
-  const regions = ['Gujarat', 'Rajasthan', 'Maharashtra', 'Delhi'];
-  const geographicMap: Record<string, number> = { Gujarat: 0, Rajasthan: 0, Maharashtra: 0, Delhi: 0 };
+  const regions = ['Jaipur', 'Ahmedabad', 'Mumbai', 'Delhi NCR', 'Pune', 'Surat'];
+  const geographicMap: Record<string, number> = { 'Jaipur': 0, 'Ahmedabad': 0, 'Mumbai': 0, 'Delhi NCR': 0, 'Pune': 0, 'Surat': 0 };
   
   feedbacks.forEach(f => {
     // Deterministic random bucket based on patient ID length/chars so it looks real
     const hash = f.patient_id ? f.patient_id.charCodeAt(0) + f.patient_id.length : 0;
-    const region = regions[hash % 4];
+    const region = regions[hash % regions.length];
     geographicMap[region] += 10; // Multiply by 10 for demo scale
   });
   
@@ -325,7 +325,7 @@ const PharmaOverview = () => {
                   <Tooltip />
                   <Bar dataKey="usage" fill="#A78BFA" radius={[0, 4, 4, 0]} barSize={24}>
                     {geographicData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.region === 'Gujarat' ? '#8B5CF6' : '#C4B5FD'} />
+                      <Cell key={`cell-${index}`} fill={['Jaipur', 'Mumbai'].includes(entry.region) ? '#8B5CF6' : '#C4B5FD'} />
                     ))}
                   </Bar>
                 </BarChart>

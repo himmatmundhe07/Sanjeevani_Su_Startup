@@ -151,10 +151,10 @@ const PricingPage = () => {
                 Sanjeevani+ Single
               </h3>
               <div className="mb-1">
-                <span className="text-[40px] font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#0891B2' }}>₹5,000</span>
-                <span className="text-[14px] ml-1" style={{ color: '#64748B' }}>/year</span>
+                <span className="text-[40px] font-bold" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif', color: '#0891B2' }}>₹3,000</span>
+                <span className="text-base font-medium ml-1" style={{ color: '#64748B' }}>/year</span>
               </div>
-              <p className="text-[12px] mb-6" style={{ color: '#94A3B8', fontFamily: 'Inter, sans-serif' }}>₹417/month equivalent</p>
+              <p className="text-xs mt-1" style={{ color: '#94A3B8' }}>₹250/month equivalent</p>
 
               <div className="space-y-0.5 mb-8">
                 <Feature included text="Everything in Free" />
@@ -254,7 +254,7 @@ const PricingPage = () => {
                     ['Priority Booking', false, true, true],
                     ['Fast Queue Access', false, true, true],
                     ['Members', '1', '1', 'Up to 4'],
-                    ['Price', '₹0', '₹5,000/yr', '₹6,000/yr'],
+                    ['Price', '₹0', '₹3,000/yr', '₹6,000/yr'],
                   ].map(([feature, free, single, family], i) => (
                     <tr key={i} style={{ borderTop: '1px solid #F1F5F9' }}>
                       <td className="p-4 font-medium" style={{ color: '#1E293B' }}>{feature as string}</td>
